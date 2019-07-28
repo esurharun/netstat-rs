@@ -144,6 +144,8 @@ unsafe fn parse_diag_msg(diag_msg: &inet_diag_msg, protocol: __u8, rtalen: usize
             protocol_socket_info: ProtocolSocketInfo::Udp(UdpSocketInfo {
                 local_addr: src_ip,
                 local_port: src_port,
+                remote_addr: dst_ip,
+                remote_port: dst_port,
             }),
             associated_pids: Vec::with_capacity(0),
             inode: diag_msg.inode,

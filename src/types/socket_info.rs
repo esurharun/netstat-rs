@@ -53,4 +53,6 @@ pub struct TcpSocketInfo {
 pub struct UdpSocketInfo {
     pub local_addr: IpAddr,
     pub local_port: u16,
+    pub remote_addr: IpAddr,
+    pub remote_port: u16,
 }

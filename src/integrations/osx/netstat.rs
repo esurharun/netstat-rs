@@ -105,6 +105,8 @@ fn parse_line(
             protocol_socket_info: ProtocolSocketInfo::Udp(UdpSocketInfo {
                 local_addr: parse_ip(local_addr, is_ipv4)?,
                 local_port: parse_port(local_port)?,
+                remote_addr: parse_ip(remote_addr, is_ipv4)?,
+                remote_port: parse_port(remote_port)?,
             }),
             associated_pids: vec![
                 pid.parse::<u32>()
