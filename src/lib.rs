@@ -36,16 +36,13 @@ mod tests {
 
     #[test]
     fn result_is_empty_for_empty_flags() {
-
         let sockets_info =
             get_sockets_info(AddressFamilyFlags::empty(), ProtocolFlags::empty()).unwrap();
         assert!(sockets_info.len() == 0);
     }
 
-    
     #[test]
     fn every_socket_is_either_tcp_or_udp() {
-
         let af_flags = AddressFamilyFlags::all();
         let proto_flags = ProtocolFlags::all();
         let sockets_info = iterate_sockets_info(af_flags, proto_flags).unwrap();

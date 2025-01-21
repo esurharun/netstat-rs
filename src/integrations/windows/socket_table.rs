@@ -77,8 +77,9 @@ impl SocketTable for MIB_UDPTABLE_OWNER_PID {
             protocol_socket_info: ProtocolSocketInfo::Udp(UdpSocketInfo {
                 local_addr: IpAddr::V4(Ipv4Addr::from(u32::from_be(row.local_addr))),
                 local_port: u16::from_be(row.local_port as u16),
-                remote_addr: IpAddr::V4(Ipv4Addr::from(u32::from_be(row.remote_addr))),
-                remote_port: u16::from_be(row.remote_port as u16),
+                // There are no remote address in MIB_UDPROW_OWNER_PID object
+                remote_addr: IpAddr::V4(Ipv4Addr::from([127,0,0,1])),
+                remote_port: 0,
             }),
             associated_pids: vec![row.owning_pid],
         }
@@ -102,6 +103,9 @@ impl SocketTable for MIB_UDP6TABLE_OWNER_PID {
                 local_addr: IpAddr::V6(Ipv6Addr::from(row.local_addr)),
                 // local_scope: Option::Some(row.local_scope_id),
                 local_port: u16::from_be(row.local_port as u16),
+                // There are no remote address in MIB_UDPROW_OWNER_PID object
+                remote_addr: IpAddr::V4(Ipv4Addr::from([127,0,0,1])),
+                remote_port: 0,
             }),
             associated_pids: vec![row.owning_pid],
         }

@@ -1,7 +1,7 @@
 use std::fmt;
 
 /// State of TCP connection.
-#[derive(Copy, Clone, Debug,PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum TcpState {
     Closed,
     Listen,
