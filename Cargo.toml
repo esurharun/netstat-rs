@@ -1,6 +1,6 @@
 [package]
 name = "netstat-esr"
-version = "0.8.0"
+version = "0.8.1"
 authors = ["ivxvm <ivxvm@protonmail.com>", "Harun Esur <harun.esur@sceptive.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
