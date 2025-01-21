@@ -9,7 +9,7 @@ documentation = "https://docs.rs/netstat"
 categories = ["network-programming", "os"]
 keywords = ["network", "socket"]
 description = """
-Cross-platform library to retrieve network sockets information.
+Maintained version of netstat-rs which is a cross-platform library to retrieve network sockets information.
 """
 
 [build-dependencies]

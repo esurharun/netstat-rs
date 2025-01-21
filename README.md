@@ -1,5 +1,5 @@
-netstat
-=======
+netstat-esr
+==========
 
 
 Cross-platform library to retrieve network sockets information.
@@ -28,7 +28,7 @@ fn main() {
 - On Windows, library uses [GetExtendedTcpTable](https://docs.microsoft.com/en-us/windows/desktop/api/iphlpapi/nf-iphlpapi-getextendedtcptable) & [GetExtendedUdpTable](https://docs.microsoft.com/en-us/windows/desktop/api/iphlpapi/nf-iphlpapi-getextendedudptable) (iphlpapi)
 - On Linux, it uses [NETLINK_INET_DIAG](http://manpages.ubuntu.com/manpages/bionic/en/man7/sock_diag.7.html) protocol and performs pid lookup by traversing `procfs`
 - On OS X, it uses sysctl system calls with "net.inet.tcp.pcblist" header to populate active connections. 
-Got tech details from FreeBSD version of (netstat)[https://web.mit.edu/freebsd/head/usr.bin/systat/netstat.c].
+Got tech details from FreeBSD version of [netstat][https://web.mit.edu/freebsd/head/usr.bin/systat/netstat.c].
 Pid lookup is not ready yet!
 
 
