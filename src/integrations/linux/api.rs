@@ -7,7 +7,7 @@ use types::*;
 pub fn iterate_sockets_info(
     af_flags: AddressFamilyFlags,
     proto_flags: ProtocolFlags,
-) -> Result<impl Iterator<Item = Result<SocketInfo, Error>>, Error> {
+) -> Result<Vec<SocketInfo>, Error> {
     let ipv4 = af_flags.contains(AddressFamilyFlags::IPV4);
     let ipv6 = af_flags.contains(AddressFamilyFlags::IPV6);
     let tcp = proto_flags.contains(ProtocolFlags::TCP);
@@ -31,7 +31,19 @@ pub fn iterate_sockets_info(
             }
         }
     }
-    Ok(attach_pids(iterators.into_iter().flatten()))
+    let it_with_pids = attach_pids(iterators.into_iter().flatten());
+    let mut ret: Vec<SocketInfo> = Vec::new();
+
+    for it in it_with_pids {
+        let mut iter = it.iter();
+        let mut item = iter.next();
+        while !item.is_none() {
+            ret.push(item.unwrap().clone());
+            item = iter.next();
+        }
+    }
+
+    Ok(ret)
 }
 
 fn attach_pids(

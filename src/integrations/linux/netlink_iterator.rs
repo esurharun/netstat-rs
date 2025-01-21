@@ -1,7 +1,14 @@
-use integrations::linux::ffi::*;
-use libc::*;
+use integrations::linux::ffi::{
+    __be32, inet_diag_msg, inet_diag_req_v2, rtattr, tcp_info, INET_DIAG_INFO, SOCK_DIAG_BY_FAMILY,
+};
+//use libc::*;
+use libc::{
+    __u32, __u8, c_int, c_uint, c_void, close, iovec, msghdr, nlmsghdr, recv, sa_family_t, sendmsg,
+    size_t, sockaddr_nl, socket, AF_NETLINK, NETLINK_INET_DIAG, NLMSG_DONE, NLMSG_ERROR,
+    NLM_F_DUMP, NLM_F_REQUEST, SOCK_DGRAM,
+};
 use std;
-use std::mem::size_of;
+use std::mem::{size_of, MaybeUninit};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use types::*;
 use utils::*;
@@ -70,13 +77,14 @@ impl Iterator for NetlinkIterator {
 impl Drop for NetlinkIterator {
     fn drop(&mut self) {
         unsafe {
-            try_close(self.socket);
+            let _ = try_close(self.socket);
         }
     }
 }
 
 unsafe fn send_diag_msg(sockfd: c_int, family: __u8, protocol: __u8) -> Result<(), Error> {
-    let mut sa: sockaddr_nl = std::mem::uninitialized();
+    let sa = MaybeUninit::<sockaddr_nl>::uninit();
+    let mut sa: sockaddr_nl = unsafe { sa.assume_init() };
     sa.nl_family = AF_NETLINK as sa_family_t;
     sa.nl_pid = 0;
     sa.nl_groups = 0;
@@ -129,7 +137,7 @@ unsafe fn parse_diag_msg(diag_msg: &inet_diag_msg, protocol: __u8, rtalen: usize
     let src_ip = parse_ip(diag_msg.family, &diag_msg.id.src);
     let dst_ip = parse_ip(diag_msg.family, &diag_msg.id.dst);
     match protocol as i32 {
-        IPPROTO_TCP => SocketInfo {
+        libc::IPPROTO_TCP => SocketInfo {
             protocol_socket_info: ProtocolSocketInfo::Tcp(TcpSocketInfo {
                 local_addr: src_ip,
                 local_port: src_port,
@@ -140,7 +148,7 @@ unsafe fn parse_diag_msg(diag_msg: &inet_diag_msg, protocol: __u8, rtalen: usize
             associated_pids: Vec::with_capacity(0),
             inode: diag_msg.inode,
         },
-        IPPROTO_UDP => SocketInfo {
+        libc::IPPROTO_UDP => SocketInfo {
             protocol_socket_info: ProtocolSocketInfo::Udp(UdpSocketInfo {
                 local_addr: src_ip,
                 local_port: src_port,
@@ -156,10 +164,10 @@ unsafe fn parse_diag_msg(diag_msg: &inet_diag_msg, protocol: __u8, rtalen: usize
 
 unsafe fn parse_ip(family: u8, bytes: &[__be32; 4]) -> IpAddr {
     match family as i32 {
-        AF_INET => IpAddr::V4(Ipv4Addr::from(
+        libc::AF_INET => IpAddr::V4(Ipv4Addr::from(
             *(&bytes[0] as *const __be32 as *const [u8; 4]),
         )),
-        AF_INET6 => IpAddr::V6(Ipv6Addr::from(
+        libc::AF_INET6 => IpAddr::V6(Ipv6Addr::from(
             *(bytes as *const [__be32; 4] as *const u8 as *const [u8; 16]),
         )),
         _ => panic!("Unknown family!"),
