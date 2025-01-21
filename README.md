@@ -1,9 +1,6 @@
 netstat
 =======
 
-[![Latest version](https://img.shields.io/crates/v/netstat.svg)](https://crates.io/crates/netstat)
-[![Documentation](https://docs.rs/netstat/badge.svg)](https://docs.rs/netstat)
-![License](https://img.shields.io/crates/l/netstat.svg)
 
 Cross-platform library to retrieve network sockets information.
 Aims to be optimal by using low-level OS APIs instead of command line utilities.
@@ -44,7 +41,10 @@ fn main() {
 
 - On Windows, library uses [GetExtendedTcpTable](https://docs.microsoft.com/en-us/windows/desktop/api/iphlpapi/nf-iphlpapi-getextendedtcptable) & [GetExtendedUdpTable](https://docs.microsoft.com/en-us/windows/desktop/api/iphlpapi/nf-iphlpapi-getextendedudptable) (iphlpapi)
 - On Linux, it uses [NETLINK_INET_DIAG](http://manpages.ubuntu.com/manpages/bionic/en/man7/sock_diag.7.html) protocol and performs pid lookup by traversing `procfs`
-- On OS X, it should ideally use `sysctls`, but currently just parses netstat output (proper impletemention is mostly done in unused modules under `src/integrations/osx` folder, it waits for contributors with mac to finish it)
+- On OS X, it uses sysctl system calls with "net.inet.tcp.pcblist" header to populate active connections. 
+Got tech details from FreeBSD version of (netstat)[https://web.mit.edu/freebsd/head/usr.bin/systat/netstat.c].
+Pid lookup is not ready yet!
+
 
 ## License
 

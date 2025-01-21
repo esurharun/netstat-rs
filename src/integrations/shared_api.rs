@@ -7,5 +7,5 @@ pub fn get_sockets_info(
     af_flags: AddressFamilyFlags,
     proto_flags: ProtocolFlags,
 ) -> Result<Vec<SocketInfo>, Error> {
-    iterate_sockets_info(af_flags, proto_flags)?.collect()
+    iterate_sockets_info(af_flags, proto_flags)
 }

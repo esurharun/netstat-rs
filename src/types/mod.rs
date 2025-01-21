@@ -1,5 +1,5 @@
 mod address_family;
-mod error;
+pub mod error;
 mod protocol;
 mod socket_info;
 mod tcp_state;

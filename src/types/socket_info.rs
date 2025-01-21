@@ -12,6 +12,29 @@ pub struct SocketInfo {
     pub inode: u32,
 }
 
+impl std::fmt::Display for SocketInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match &self.protocol_socket_info {
+            ProtocolSocketInfo::Tcp(tcp_info) => 
+                write!(f, "TCP: {}:{} {}:{} {}", 
+                    tcp_info.local_addr,
+                    tcp_info.local_port,
+                    tcp_info.remote_addr,
+                    tcp_info.remote_port,
+                    tcp_info.state
+                ),
+            ProtocolSocketInfo::Udp(udp_info) => 
+            write!(f, "UDP: {}:{} {}:{} ", 
+                udp_info.local_addr,
+                udp_info.local_port,
+                udp_info.remote_addr,
+                udp_info.remote_port
+            ),
+            
+        }
+    }
+}
+
 impl SocketInfo {
     /// Checks whether this socket info describes a TCP socket.
     pub fn is_tcp(&self) -> bool {
@@ -29,8 +52,16 @@ impl SocketInfo {
     }
 }
 
+impl PartialEq<SocketInfo> for SocketInfo {
+    fn eq(&self, other: &SocketInfo) -> bool {
+
+        return self == other;
+
+    }
+}
+
 /// Protocol-specific socket information.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ProtocolSocketInfo {
     /// TCP-specific socket information.
     Tcp(TcpSocketInfo),
@@ -39,7 +70,7 @@ pub enum ProtocolSocketInfo {
 }
 
 /// TCP-specific socket information.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug,PartialEq, Eq)]
 pub struct TcpSocketInfo {
     pub local_addr: IpAddr,
     pub local_port: u16,
@@ -49,7 +80,7 @@ pub struct TcpSocketInfo {
 }
 
 /// UDP-specific socket information.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug,PartialEq, Eq)]
 pub struct UdpSocketInfo {
     pub local_addr: IpAddr,
     pub local_port: u16,

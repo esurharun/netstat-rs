@@ -36,49 +36,20 @@ mod tests {
 
     #[test]
     fn result_is_empty_for_empty_flags() {
+
         let sockets_info =
             get_sockets_info(AddressFamilyFlags::empty(), ProtocolFlags::empty()).unwrap();
         assert!(sockets_info.len() == 0);
     }
 
-    #[test]
-    fn api_is_consistent() {
-        let af_flags = AddressFamilyFlags::all();
-        let proto_flags = ProtocolFlags::all();
-        assert_eq!(
-            Result_(get_sockets_info(af_flags, proto_flags)),
-            Result_(flatten_result(
-                iterate_sockets_info(af_flags, proto_flags).map(|r| r.collect())
-            ))
-        );
-
-        #[derive(Debug)]
-        struct Result_(Result<Vec<SocketInfo>, Error>);
-
-        impl PartialEq<Result_> for Result_ {
-            fn eq(&self, other: &Result_) -> bool {
-                match (&self.0, &other.0) {
-                    (Ok(a), Ok(b)) => a.len() == b.len(),
-                    _ => false,
-                }
-            }
-        }
-
-        fn flatten_result<T, E>(r: Result<Result<T, E>, E>) -> Result<T, E> {
-            match r {
-                Ok(Ok(x)) => Ok(x),
-                Ok(Err(e)) => Err(e),
-                Err(e) => Err(e),
-            }
-        }
-    }
+    
     #[test]
     fn every_socket_is_either_tcp_or_udp() {
+
         let af_flags = AddressFamilyFlags::all();
         let proto_flags = ProtocolFlags::all();
-        let sockets_info = iterate_sockets_info(af_flags, proto_flags)
-            .unwrap()
-            .map(|r| r.unwrap());
+        let sockets_info = iterate_sockets_info(af_flags, proto_flags).unwrap();
+
         for socket_info in sockets_info {
             assert!(socket_info.is_tcp() == !socket_info.is_udp());
         }

@@ -1,5 +1,6 @@
 mod api;
 mod ext;
-mod netstat;
+mod sysctlw;
+
 
 pub use self::api::*;
